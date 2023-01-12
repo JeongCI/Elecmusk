@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pcwk.ehr.evcar">
+  
+  <sql id="manufactureKeyword">
+    <choose>
+        <when test="  '현대' == manufactureKeyword">
+         AND manufacture = #{manufactureKeyword}
+        </when>
+        <when test="  '기아' == manufactureKeyword">
+         AND manufacture = #{manufactureKeyword}
+        </when>
+        <when test="  '쌍용' == manufactureKeyword">
+         AND manufacture = #{manufactureKeyword}
+        </when>
+        <when test="  '르노삼성' == manufactureKeyword">
+         AND manufacture = #{manufactureKeyword}
+        </when>
+        <when test="  '쉐보레' == manufactureKeyword">
+         AND manufacture #{manufactureKeyword}
+        </when>
+        <when test="  '대창모터스' == manufactureKeyword">
+         AND manufacture = #{manufactureKeyword}
+        </when>
+        <when test="  '벤츠' == manufactureKeyword">
+         AND manufacture = #{manufactureKeyword}
+        </when>
+        <when test="  '테슬라' == manufactureKeyword">
+         AND manufacture = #{manufactureKeyword}
+        </when>
+    </choose>  
+  </sql>
+  
+  <sql id="appearanceKeyword">
+    <choose>
+      <when test=" '세단' == appearanceKeyword">
+        AND appearance = #{appearanceKeyword}
+      </when>
+      <when test=" 'SUV' == appearanceKeyword">
+        AND appearance = #{appearanceKeyword}
+      </when>
+      <when test=" '해치백' == appearanceKeyword">
+        AND appearance = #{appearanceKeyword}
+      </when>
+    </choose>
+  </sql>
+  
+  <sql id="modelKeyword">
+    <choose>
+      <when test=" '경형' == modelKeyword">
+        AND model = #{modelKeyword}
+      </when>
+      <when test=" '소형' == modelKeyword">
+        AND model = #{modelKeyword}
+      </when>
+      <when test=" '준중형' == modelKeyword">
+        AND model = #{modelKeyword}
+      </when>
+      <when test=" '중형' == modelKeyword">
+        AND model = #{modelKeyword}
+      </when>
+      <when test=" '준대형' == modelKeyword">
+        AND model = #{modelKeyword}
+      </when>
+    </choose>
+  </sql>
+  
+  <sql id="batteryTypeKeyword">
+    <choose>
+      <when test=" '리튬이온' == batteryTypeKeyword">
+        AND battery_type = #{batteryTypeKeyword}
+      </when>
+      <when test=" '리튬이온폴리머' == batteryTypeKeyword">
+        AND battery_type = #{batteryTypeKeyword}
+      </when>
+    </choose>
+  </sql>
+  
+  <resultMap type="evCarVO" id="evcarVO">
+   <result  column="carNo"       property="carNo"      />
+   <result  column="name"       property="carName"      />
+   <result  column="image"       property="imgUrl"      />
+   <result  column="price"       property="carPrice"      />
+   <result  column="manufacture"     property="manufacture"    />
+   <result  column="product_year"  property="productYear" />
+   <result  column="appearance"  property="appearance"  />
+   <result  column="model"    property="carModel"    />
+   <result  column="max_distance"    property="maxDistance"    />
+   <result  column="battery_type"    property="batteryType"    />
+   <result  column="battery_capacity"    property="batteryCapa"    />
+   <result  column="max_speed"    property="maxSpeed"    />
+   <result  column="output"    property="outPut"    />
+  </resultMap>  
+  
+  <select id="doRetrieve" parameterType="evSearchVO" resultMap="evcarVO">
+    SELECT A.*, B.*
+    FROM (
+        SELECT
+            TT1.rnum as num,     
+            TT1.evcar_seq as carNo,
+            TT1.name,
+            TT1.image,
+            TT1.price,
+            TT1.manufacture,
+            TT1.product_year,
+            TT1.appearance,
+            TT1.model,
+            TT1.max_distance,
+            TT1.battery_type,
+            TT1.battery_capacity,
+            TT1.max_speed,
+            TT1.output
+        FROM (
+            SELECT ROWNUM as rnum, T1.*
+            FROM (
+                SELECT *
+                FROM EVCAR
+                <![CDATA[WHERE evcar_seq >= 0]]>
+                <include refid="manufactureKeyword"></include>
+                <include refid="appearanceKeyword"></include>
+                <include refid="modelKeyword"></include>
+                <include refid="batteryTypeKeyword"></include>
+                ORDER BY evcar_seq DESC
+            )T1
+          <![CDATA[  WHERE ROWNUM <= #{pageSize} * (#{pageNo} -1) + #{pageSize} ]]>
+        )TT1
+         <![CDATA[ WHERE rnum >= #{pageSize} * (#{pageNo} -1) + 1 ]]>
+    )A
+    CROSS JOIN (
+    SELECT COUNT(*) totalCnt
+    FROM EVCAR
+    <![CDATA[WHERE evcar_seq >= 0]]>
+    <include refid="manufactureKeyword"></include>
+    <include refid="appearanceKeyword"></include>
+    <include refid="modelKeyword"></include>
+    <include refid="batteryTypeKeyword"></include>    
+    )B
+  </select>
+  
+  <insert id="evCarSave" parameterType="evCarVO">
+		INSERT INTO evcar (
+		    evcar_seq,
+		    name,
+		    image,
+		    price,
+		    manufacture,
+		    product_year,
+		    appearance,
+		    model,
+		    max_distance,
+		    battery_type,
+		    battery_capacity,
+		    max_speed,
+		    output
+		) VALUES (
+		    EVCAR_SEQ.nextval,
+		    #{carName},
+		    #{imgUrl},
+		    #{carPrice},
+		    #{manufacture},
+		    #{productYear},
+		    #{appearance},
+		    #{carModel},
+		    #{maxDistance},
+		    #{batteryType},
+		    #{batteryCapa},
+		    #{maxSpeed},
+		    #{outPut}
+		)  
+  </insert>
+  
+  <select id="evCarSelectOne" parameterType="evCarVO" resultMap="evcarVO">
+		SELECT
+		    evcar_seq as carNo,
+		    name,
+		    image,
+		    price,
+		    manufacture,
+		    product_year,
+		    appearance,
+		    model,
+		    max_distance,
+		    battery_type,
+		    battery_capacity,
+		    max_speed,
+		    output
+		FROM evcar
+		WHERE evcar_seq = #{carNo}
+  </select>
+  
+  <delete id="evCarDelete" parameterType="evCarVO">
+		DELETE FROM evcar
+		WHERE evcar_seq = #{carNo}  
+  </delete>
+  
+  <update id="evCarUpdate" parameterType="com.pcwk.ehr.evcar.domain.EvCarVO">
+		UPDATE evcar
+		SET name             = #{carName},
+		    image            = #{imgUrl},
+		    price            = #{carPrice},
+		    manufacture      = #{manufacture},
+		    product_year     = #{productYear},
+		    appearance       = #{appearance},
+		    model            = #{carModel},
+		    max_distance     = #{maxDistance},
+		    battery_type     = #{batteryType},
+		    battery_capacity = #{batteryCapa},
+		    max_speed        = #{maxSpeed},
+		    output           = #{outPut}
+		WHERE
+		    evcar_seq = #{carNo}  
+  </update>
+  
+</mapper>  

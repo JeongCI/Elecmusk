@@ -1,0 +1,327 @@
+@charset "UTF-8";
+  body, header, div, footer, ul, li, p, h1 {
+    margin: 0;
+    padding: 0;
+  }
+  
+  li {
+    list-style-type: none;
+  }
+  
+  header {
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+    box-shadow: 0 5px 5px -5px rgba(0,0,0,0.3);
+  }
+  
+  a {
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+  }
+  
+  /* 로고 area --------------------------------------------------------------- */
+  .logo-area{
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+    margin-top: 10px;
+  }
+  
+  /* 메뉴 옆 text-logo area --------------------------------------------------- */
+  .text-logo-area{
+    left: 30px;
+    position: absolute;
+    display: none;
+    
+  }
+  
+  .visible {
+    display: block;
+  }
+  
+  /* 메뉴 area --------------------------------------------------------------- */
+  #menu-area {
+    height: 30px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    line-height: 30px;
+    letter-spacing: 0.05em;
+    display: flex;
+  }
+  
+  /* menu-bar area ---------------------------------------------------------- */
+  
+  .menu-bar{
+    margin: 0 auto;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 30px;
+    margin-bottom: 20px;
+  }
+  
+  .sub-menu {
+    display:none;
+    opacity: 0;
+    position: relative;
+    top:20px;
+    border:1px solid rgba(0,0,0,0.3);
+    z-index: -1;
+    background-color: rgb(255,255,255);    
+  }
+  
+  .menu-bar > li {
+    float: left;
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    width: 180px;
+  }
+  
+  .menu-bar > li > a {
+    display: block;
+    margin: 5px;
+    text-align: center;
+  }
+  
+  #menu-bar:after {
+    display:block;
+    content: '';
+    border-bottom: solid 2px black;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+  }
+  
+  #menu-bar:hover:after {
+    transform: scaleX(1);
+  }  
+  
+  #sub-menu li:after {
+    display:block;
+    content: '';
+    border-bottom: solid 2px black;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+  }
+  
+  #sub-menu li:hover:after {
+    transform: scaleX(1);
+  }  
+
+  .sub-menu > li {
+    padding: 5px;
+    margin: 0px;
+    text-align: center;
+    position: relative;
+    z-index: -1;
+    display:none;
+  }
+  
+  .sub-menu > li > a {
+    text-align: center;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: -1;
+    display:none;    
+  }
+  
+  /* login-area ------------------------------------------------------------- */
+  .login-area {
+    position: relative;
+    right: 50px;
+    padding-top:5px;
+    top: 0;
+    text-align: right;
+  }
+  
+  /* banner ----------------------------------------------------------------- */
+	#imgslide{
+	  height: 800px;
+	}
+	.imgbox{
+	  margin:0 auto;
+	  position:relative;
+	  overflow: hidden;
+	  height: 800px;
+	  width: 1200px;
+	  background-color: #fff;
+	}
+	.slide{
+	  width:2400px; /* 이미지 크기 * 이미지 개수 + 여유 */
+	  position:absolute;  
+	}
+	.imgbox .slide li{
+	  display: inline; /* 이미지를 옆으로 나열 시키기 위해*/
+	  margin-right: -5px; /* 이미지 사이의 마진을 없애기 위해 */
+	}
+	
+	.imgbox>img{
+	width:100%;
+	position: absolute;
+	transition: all 2s;
+	}
+
+  /* contents area ---------------------------------------------------------- */
+  #contents {
+    padding-top: 300px;
+    margin: 0 auto;
+    width: 1200px;
+    height: 100%;
+  }
+  
+  #contents-area {
+  }
+  
+  #contents-1 {
+    margin: 10px;
+  }
+  
+  #contents-2 {
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  #contents-3 {
+    margin: 10px;
+  }
+  
+  #contents-4 {
+    margin: 10px;
+  }
+  
+  /* 중간화면 슬라이드 배너 사라짐 */
+  @media screen and (min-width:1px) and (max-width: 1200px) {
+  /* 메뉴 옆 text-logo area --------------------------------------------------- */
+  .text-logo-area{
+    left: 5px;
+    position: absolute;
+    display: none;
+  }
+  
+  .visible {
+    display: block;
+  }
+  
+  #text-logo {
+    width: 60%;
+  }
+
+  /* 메뉴 area --------------------------------------------------------------- */
+  #menu-area {
+    height: 30px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    line-height: 30px;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  /* menu-bar area ---------------------------------------------------------- */
+  
+  .menu-bar {
+    margin: 0px;
+    padding: 0px;
+    position:relative;
+    width: 100%;
+  }
+  
+  .sub-menu{
+    left: 5%;
+  }
+  
+  .menu-bar > li {
+    float: left;
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+    width: 150px;
+  }
+  
+  .menu-bar > li > a {
+    display: block;
+    margin: 5px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .sub-menu > li {
+    padding: 5px;
+    margin: 0px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .sub-menu > li > a {
+    text-align: center;
+    letter-spacing: 0.05em;
+    position: relative;
+    font-size: 13px;
+  }
+  
+  .sub-menu {
+    opacity: 0;
+    position: relative;
+    top:10px;
+    z-index: -1;
+    background-color: rgba(250, 250, 250,0.8);
+  }
+  /* banner ----------------------------------------------------------------- */
+  #imgslide{
+    display:none;
+  }
+  .imgbox{
+    display:none;
+  }
+  .slide{
+    display:none; 
+  }
+  .imgbox .slide li{
+    display:none;
+  }
+  
+  .imgbox>img{
+    display:none;
+  }
+
+  /* contents area ---------------------------------------------------------- */
+  #contents {
+    position: relative;
+    border: 1px solid;
+    padding-top: 300px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+  }
+  
+  #contents-area {
+    border: 1px solid;
+  }
+  
+  #contents-1 {
+    margin: 10px;
+  }
+  
+  #contents-2 {
+    margin: 10px;
+  }
+  
+  #contents-3 {
+    margin: 10px;
+  }
+  
+  #contents-4 {
+    margin: 10px;
+  } 
+  }
+  /* end -------------------------------------------------------------------- */
+  
+  /* PC */
+  @media screen and (min-width: 1001px) {
+    
+  }
+  /* end -------------------------------------------------------------------- */  

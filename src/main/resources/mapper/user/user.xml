@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pcwk.ehr.user">
+	<insert id="doSave" parameterType="UserVO">
+		INSERT INTO MEMBER (
+	    member_seq,
+	    id,
+	    nickname,
+	    password,
+	    name,
+	    birth,
+	    email,
+	    backup_question,
+	    backup_answer,
+	    point,
+	    status
+) VALUES (
+			MEMBER_SEQ.nextval,
+			#{userId},
+			#{nickname},
+			#{userPw},
+			#{name},
+			#{birth},
+			#{email},
+			#{backupQuestion},
+			#{backupAnswer},
+			#{point},
+			#{status}
+		)
+	</insert>
+
+  <update id="doUpdate" parameterType="UserVO">
+    UPDATE member
+    SET id = #{userId},
+        nickname = #{nickname},
+        password = #{userPw},
+        name = #{name},
+        birth = #{birth},
+        email = #{email},
+        backup_question = #{backupQuestion},
+        backup_answer = #{backupAnswer},
+        point = #{point},
+        status = #{status}
+    WHERE member_seq = #{mSeq}
+  </update>
+  
+  <delete id="doDelete" parameterType="UserVO">
+	 DELETE FROM member
+	 WHERE member_seq = #{mSeq}
+  </delete>
+  
+  <!-- as로 이름을 같게하거나, Map만들기 -->
+  <select id="doSelectOne" parameterType="UserVO" resultMap="userMap">
+    SELECT
+    member_seq,
+    id,
+    nickname,
+    password,
+    name,
+    TO_CHAR(birth,'YYYYMMDD') as birth,
+    email,
+    backup_question,
+    backup_answer,
+    point,
+    join_date,
+    status,
+    last_login,
+    last_post
+FROM member
+   WHERE member_seq = #{mSeq}
+  </select>
+  
+  <!-- 목록조회 용 검색조건 -->
+  <sql id="searchCondition">
+       <where>
+          <choose>
+             <when test=" '10' == searchDiv and '' != searchWord  ">
+                MEMBER_SEQ  LIKE '%' || #{searchWord} || '%'
+             </when>
+             <when test=" '20' == searchDiv and '' != searchWord  ">
+                id  LIKE '%' || #{searchWord} || '%'
+             </when>
+             <when test=" '30' == searchDiv and '' != searchWord  ">
+                nickname  LIKE '%' || #{searchWord} || '%'
+             </when>
+             <when test=" '40' == searchDiv and '' != searchWord  ">
+                name LIKE '%' || #{searchWord} || '%'
+             </when>                                    
+          </choose>
+       </where>  
+  </sql>
+  
+    <!-- 목록조회 용 검색조건 -->
+  <sql id="userCondition">
+       <where>
+          <choose>
+             <when test=" '10' == userDiv ">
+                status = 1
+             </when>
+             <when test=" '20' == userDiv">
+                status = 0
+             </when>          
+             <when test=" '30' == userDiv">
+                status != 2
+             </when>          
+          </choose>
+       </where>  
+  </sql>
+
+  <select id="doRetrieve" parameterType="com.pcwk.ehr.user.domain.UserSearchVO" resultType="UserVO">
+  SELECT A.*,B.*
+  FROM
+      (
+          SELECT
+          t2.rnum as num,
+          t2.member_seq as mSeq,
+          t2.id as userId,
+          t2.nickname as nickname,
+          t2.password as userPw,
+          t2.name as name,
+          TO_CHAR(t2.birth,'YYYYMMDD') as birth,
+          t2.email as email,
+          t2.backup_question as backupQuestion,
+          t2.backup_answer as backupAnswer,
+          t2.point as point,
+          TO_CHAR(t2.join_date,'YYYYMMDD') as joinDate,
+          t2.status as status
+          FROM
+          (
+              SELECT ROWNUM as RNUM, T1.*
+              FROM
+              (
+                  SELECT *
+                  FROM
+                  (
+                      SELECT *
+                      FROM member
+                      <include refid="userCondition"/>
+                  )
+                  <include refid="searchCondition"/>
+                  ORDER BY join_date DESC
+              )T1
+              <![CDATA[ WHERE ROWNUM <= #{pageSize} * #{pageNo}]]>
+          )T2
+          <![CDATA[ WHERE RNUM >= #{pageSize} * (#{pageNo} - 1) + 1]]>
+  )A
+  CROSS JOIN
+  (
+      SELECT COUNT(*) as totalCnt
+      FROM 
+      (
+          SELECT *
+          FROM member
+          <include refid="userCondition"/>
+      )
+      <include refid="searchCondition"/>
+  )B
+  </select>
+  
+  <select id="pointRank" parameterType="SearchVO" resultType="UserVO">
+		SELECT A.*,B.*
+		FROM
+		        (
+		                SELECT
+		                t2.rnum as num,
+		                t2.member_seq as mSeq,
+		                t2.id as userId,
+		                t2.nickname as nickname,
+		                t2.point as point,
+		                t2.status as status
+		                FROM
+		                (
+		                        SELECT ROWNUM as RNUM, T1.*
+		                        FROM
+		                        (
+		                                SELECT *
+		                                FROM member
+		                                <![CDATA[WHERE status >= 1]]>
+		                                ORDER BY member.point DESC
+		                        )T1
+		                    <![CDATA[WHERE ROWNUM <= 10]]>
+		                )T2
+		                <![CDATA[WHERE RNUM >= 1]]>
+		)A
+		CROSS JOIN
+		(
+		        SELECT COUNT(*) as totalCnt
+		        FROM member
+		        <![CDATA[WHERE status >= 1]]>
+		)B
+  </select>
+
+  
+  <!-- resultMap -->
+  <!-- selectOne용 
+    컬럼은 각 DB컬럼
+    프로퍼티는 VO 프로퍼티 명
+    타입은 UserVO-->
+  <resultMap type="UserVO" id="userMap">
+    <result column="member_seq"       property="mSeq"          />
+    <result column="id"               property="userId"        />
+    <result column="nickname"         property="nickname"      />
+    <result column="password"         property="userPw"        />
+    <result column="name"             property="name"          />
+    <result column="birth"            property="birth"         />
+    <result column="email"            property="email"         />
+    <result column="backup_question"  property="backupQuestion"/> 
+    <result column="backup_answer"    property="backupAnswer"  />
+    <result column="point"            property="point"         />
+    <result column="join_date"        property="joinDate"      />
+    <result column="status"           property="status"        />
+    <result column="last_login"       property="lastLogin"     />
+    <result column="last_post"        property="lastPost"      /> 
+  </resultMap>
+  
+  <select id="idCheck" parameterType="UserVO" resultType="int">
+    SELECT COUNT(*)
+    FROM member
+    WHERE id = #{userId}
+  </select>
+  
+  <select id="nicknameCheck" parameterType="UserVO" resultType="int">
+    SELECT COUNT(*)
+    FROM member
+    WHERE nickname = #{nickname}
+  </select>
+  
+  <select id="passwordCheck" parameterType="UserVO" resultMap="userMap">
+    SELECT member_seq
+    FROM member
+    WHERE id = #{userId}
+    AND password = #{userPw}
+  </select>
+  
+  <select id="findIdByEmail" parameterType="UserVO" resultMap="userMap">
+    SELECT id,
+           status
+    FROM member
+    WHERE email = #{email}
+  </select>
+  
+  <select id="findIdByNameBirth" parameterType="UserVO" resultMap="userMap">
+    SELECT id,
+           status
+    FROM member
+    WHERE name = #{name}
+    AND birth = #{birth}
+  </select>
+  
+  <select id="findPwByBackup" parameterType="UserVO" resultMap="userMap">
+    SELECT password,
+           status
+    FROM member
+    WHERE id = #{userId}
+    AND backup_question = #{backupQuestion}
+    AND backup_answer = #{backupAnswer}
+  </select>
+
+	<update id="updateNickname" parameterType="UserVO">
+		UPDATE member
+		SET nickname = #{nickname}
+		WHERE member_seq = #{mSeq}
+	</update>
+
+	<update id="updatePassword" parameterType="UserVO">
+		UPDATE member
+		SET password = #{userPw}
+		WHERE member_seq = #{mSeq}
+	</update>
+
+	<update id="updateEmail" parameterType="UserVO">
+		UPDATE member
+		SET email = #{email}
+		WHERE member_seq = #{mSeq}
+	</update>
+
+	<update id="loginAddPoint" parameterType="UserVO">
+		UPDATE member
+		SET point = point+100,
+		LAST_LOGIN = SYSDATE
+		WHERE member_seq = #{mSeq}
+		AND TO_CHAR(SYSDATE,'YYYYMMDD')!=TO_CHAR(LAST_LOGIN,'YYYYMMDD')
+	</update>
+	
+	<update id="postAddPoint" parameterType="UserVO">
+		UPDATE member
+		SET point = point+50,
+		LAST_POST = SYSDATE
+		WHERE member_seq = #{mSeq}
+		AND TO_CHAR(SYSDATE,'YYYYMMDD')!=TO_CHAR(LAST_POST,'YYYYMMDD')
+	</update>
+  
+</mapper>  

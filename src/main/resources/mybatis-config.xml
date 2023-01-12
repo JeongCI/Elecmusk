@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+  <configuration>
+    <typeAliases>
+      <typeAlias type="com.pcwk.ehr.evcar.cmn.evSearchVO" alias="evSearchVO"/>
+      <typeAlias type="com.pcwk.ehr.chart.domain.evChartVO" alias="evChartVO"/>
+      <typeAlias type="com.pcwk.ehr.code.domain.CodeVO" alias="CodeVO"/>
+      <typeAlias type="com.pcwk.ehr.evcar.domain.EvCarVO" alias="evCarVO"/>
+      <typeAlias type="com.pcwk.ehr.regionalcount.domain.RegionalCountVO" alias="RegionalCountVO"/>
+      <typeAlias type="com.pcwk.ehr.chargingfee.domain.ChargingFeeVO" alias="ChargingFeeVO"/>
+      <typeAlias type="com.pcwk.ehr.charger.domain.ChargerVO" alias="ChargerVO"/>
+      <typeAlias type="com.pcwk.ehr.subsidy.domain.SubsidyVO" alias="SubsidyVO"/>
+      <typeAlias type="com.pcwk.ehr.station.domain.StationVO" alias="StationVO"/>
+      <typeAlias type="com.pcwk.ehr.board.domain.BoardVO" alias="BoardVO"/>
+      <typeAlias type="com.pcwk.ehr.board.comment.domain.BoardCommentVO" alias="BoardCommentVO"/>
+      <typeAlias type="com.pcwk.ehr.user.domain.UserVO" alias="UserVO"/>
+      <typeAlias type="com.pcwk.ehr.cmn.SearchVO" alias="SearchVO"/>
+    </typeAliases>
+  </configuration>

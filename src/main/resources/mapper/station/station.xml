@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pcwk.ehr.station">
+
+    <sql id="addrKeyword">
+      <choose>
+        <when test=" '서울' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '인천' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '경기' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '강원' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '대전' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '세종' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '대구' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '울산' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '광주' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '부산' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '제주' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '경상북도' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '경상남도' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '전라북도' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '전라남도' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '충청북도' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+        <when test=" '충청남도' == addrKeyword">
+          AND addr LIKE #{addrKeyword} || '%'
+        </when>
+      </choose>
+    </sql>
+    
+    <sql id="cpnmKeyword">
+      <choose>
+        <when test=" '완속' == cpnmKeyword">
+          AND cpnm LIKE #{cpnmKeyword} || '%'
+        </when>
+        <when test=" '급속' == cpnmKeyword">
+          AND cpnm LIKE #{cpnmKeyword} || '%'
+        </when>
+      </choose>
+    </sql>
+
+    <sql id="cptpKeyword">
+      <choose>
+        <when test=" 1 == cptpKeyword">
+          AND cptp = #{cptpKeyword} 
+        </when>
+        <when test=" 2 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 3 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 4 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 5 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 6 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 7 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 8 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 9 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+        <when test=" 10 == cptpKeyword">
+          AND cptp = #{cptpKeyword}
+        </when>
+      </choose>
+    </sql>
+  
+   <!-- resultMap -->
+  <!-- 
+    column : DB컬럼
+    property : VO 프로퍼티명
+    jdbcType : DB컬럼 타입
+    type : VO
+   -->
+  <resultMap type="StationVO" id="stationMap">
+    <result column="station_seq"        property="station_seq"    />
+    <result column="addr"               property="addr"           />
+    <result column="chargetp"           property="chargetp"       />
+    <result column="cpid"               property="cpid"           />
+    <result column="cpnm"               property="cpnm"           />
+    <result column="cpstat"             property="cpstat"         />
+    <result column="cptp"               property="cptp"           />
+    <result column="csid"               property="csid"           />
+    <result column="csnm"               property="csnm"           />
+    <result column="lat"                property="lat"            />
+    <result column="longi"              property="longi"          />
+    <result column="statupdatetime"     property="statupdatetime" />
+  </resultMap>
+  
+  <update id="doUpdate" parameterType="StationVO">
+  UPDATE station_data
+	SET
+	  addr            = #{addr},
+	  chargetp        = #{chargetp},
+	  cpid            = #{cpid},
+	  cpnm            = #{cpnm},
+	  cpstat          = #{cpstat},
+	  cptp            = #{cptp},
+	  csid            = #{csid},
+	  csnm            = #{csnm},
+	  lat             = #{lat},
+	  longi           = #{longi},
+	  statupdatetime  = #{statupdatetime}
+	WHERE station_seq = #{station_seq}
+  </update>
+	
+	<select id="doRetrieve" parameterType="evSearchVO" resultMap="stationMap">
+		--paging
+		SELECT A.*, B.*
+		FROM(
+		    SELECT TT1.rnum as num,
+		           TT1.station_seq,
+		           TT1.addr,
+		           TT1.chargetp,
+		           TT1.cpid,
+		           TT1.cpnm,
+		           TT1.cpstat,
+		           TT1.cptp,
+		           TT1.csid,
+		           TT1.csnm,
+		           TT1.lat,
+		           TT1.longi,
+		           TT1.statupdatetime
+		    FROM(
+		        SELECT ROWNUM AS rnum, T1.*
+		        FROM(
+		            SELECT *
+		            FROM station_data
+		            <![CDATA[WHERE station_seq >= 0]]>
+		            <include refid="addrKeyword"></include>
+		            <include refid="cpnmKeyword"></include>
+		            <include refid="cptpKeyword"></include>
+		            ORDER BY station_seq DESC
+		        )T1
+		        <![CDATA[ WHERE ROWNUM <= #{pageSize} * (#{pageNo} -1) + #{pageSize} ]]>
+		    )TT1
+		    <![CDATA[ WHERE rnum >= #{pageSize} * (#{pageNo} -1) + 1 ]]>
+		)A
+		CROSS JOIN
+		(
+		    SELECT COUNT(*) totalCnt
+		    FROM station_data
+		)B	
+			
+	</select>
+	
+	<select id="doSelectOne" parameterType="StationVO" resultMap="stationMap">
+	 SELECT
+		       station_seq,
+		       addr,
+		       chargetp,
+		       cpid,
+		       cpnm,
+		       cpstat,
+		       cptp,
+		       csid,
+		       csnm,
+		       lat,
+		       longi,
+		       statupdatetime
+		FROM station_data
+		WHERE station_seq = #{station_seq}
+	</select>
+	
+	<select id="stationCheck" parameterType="StationVO" resultMap="stationMap">
+   SELECT
+           station_seq,
+           addr,
+           chargetp,
+           cpid,
+           cpnm,
+           cpstat,
+           cptp,
+           csid,
+           csnm,
+           lat,
+           longi,
+           statupdatetime
+    FROM station_data
+    WHERE cpid = #{cpid}
+    AND   csid = #{csid}
+	</select>
+	
+	<delete id="doDelete" parameterType="StationVO">
+	 DELETE FROM station_data
+   WHERE   station_seq = #{station_seq}
+	</delete>
+	
+	<insert id="doSave" parameterType="StationVO">
+		INSERT INTO station_data (
+		    station_seq,
+		    addr,
+		    chargetp,
+		    cpid,
+		    cpnm,
+		    cpstat,
+		    cptp,
+		    csid,
+		    csnm,
+		    lat,
+		    longi,
+		    statupdatetime
+		) VALUES (
+		    #{station_seq},
+		    #{addr},
+		    #{chargetp},
+		    #{cpid},
+		    #{cpnm},
+		    #{cpstat},
+		    #{cptp},
+		    #{csid},
+		    #{csnm},
+		    #{lat},
+		    #{longi},
+		    #{statupdatetime}
+		)	
+	</insert>
+	
+</mapper>  

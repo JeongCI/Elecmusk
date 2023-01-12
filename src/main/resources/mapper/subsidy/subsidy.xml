@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pcwk.ehr.subsidy">
+  
+  <resultMap type="SubsidyVO" id="subsidyMap">
+    <result column="subsidy_seq" property="subsidy_seq"/>
+    <result column="name" property="name"/>
+    <result column="model" property="model"/>
+    <result column="subsidy" property="subsidy"/>
+    <result column="manufacturer" property="manufacturer"/>
+    <result column="madeby" property="madeby"/>
+  </resultMap>
+  
+    <sql id="submodelKeyword">
+      <choose>
+        <when test=" '승용차' == submodelKeyword">
+          AND model = #{submodelKeyword}
+        </when>
+        <when test=" '승합차' == submodelKeyword">
+          AND model = #{submodelKeyword}
+        </when>
+        <when test=" '화물차' == submodelKeyword">
+          AND model = #{submodelKeyword}
+        </when>
+      </choose>
+    </sql>
+
+    <sql id="madebyKeyword">
+      <choose>
+        <when test=" '국산' == madebyKeyword">
+          AND madeby = #{madebyKeyword}
+        </when>
+        <when test=" '수입' == madebyKeyword">
+          AND madeby = #{madebyKeyword}
+        </when>
+      </choose>
+    </sql>
+
+    <sql id="subsidyKeyword">
+      <choose>
+        <when test=" '1000' == subsidyKeyword">
+          <![CDATA[ AND subsidy > 0 AND subsidy <= #{subsidyKeyword} ]]>
+        </when>
+        <when test=" '2000' == subsidyKeyword">
+          <![CDATA[ AND subsidy > 1000 AND subsidy <= #{subsidyKeyword} ]]>
+        </when>
+        <when test=" '3000' == subsidyKeyword">
+          <![CDATA[ AND subsidy > 2000 AND subsidy <= #{subsidyKeyword} ]]>
+        </when>
+        <when test=" '3001' == subsidyKeyword">
+          <![CDATA[ AND subsidy >= #{subsidyKeyword}  ]]>
+        </when>
+      </choose>
+    </sql>
+
+
+  
+  <select id="doSelectOne" parameterType="SubsidyVO" resultMap="subsidyMap">
+  SELECT
+	     subsidy_seq,
+	     name,
+	     model,
+	     subsidy,
+	     manufacturer,
+	     madeby
+	FROM subsidy
+	WHERE subsidy_seq = #{subsidy_seq}
+  </select>
+  
+  <update id="doUpdate" parameterType="SubsidyVO">
+      UPDATE subsidy
+	    SET name          = #{name},
+	        model         = #{model},
+	        subsidy       = #{subsidy},
+	        manufacturer  = #{manufacturer},
+	        madeby        = #{madeby}
+	    WHERE subsidy_seq  = #{subsidy_seq}
+  </update>
+  
+  <insert id="doSave" parameterType="SubsidyVO">
+    INSERT INTO subsidy (
+		    subsidy_seq,
+		    name,
+		    model,
+		    subsidy,
+		    manufacturer,
+		    madeby
+		) VALUES (
+		    SUBSIDY_SEQ.NEXTVAL,
+		    #{name},
+		    #{model},
+		    #{subsidy},
+		    #{manufacturer},
+		    #{madeby}
+		)
+  </insert>
+  
+  <delete id="doDelete" parameterType="SubsidyVO">
+    DELETE FROM subsidy
+    WHERE subsidy_seq = #{subsidy_seq}
+  </delete>
+  
+  
+  <select id="doRetrieve" parameterType="evSearchVO" resultMap="subsidyMap">
+  --paging
+	SELECT A.*, B.*
+	FROM(
+	    SELECT TT1.rnum as num,
+	           TT1.subsidy_seq,
+	           TT1.name,
+	           TT1.model,
+	           TT1.subsidy,
+	           TT1.manufacturer,
+	           TT1.madeby
+	    FROM(
+	        SELECT ROWNUM AS rnum, T1.*
+	        FROM(
+	            SELECT *
+	            FROM subsidy
+	            <![CDATA[WHERE subsidy_seq >= 0]]>
+	            <include refid="submodelKeyword"></include>
+	            <include refid="madebyKeyword"></include>
+	            <include refid="subsidyKeyword"></include>
+	            ORDER BY subsidy_seq ASC
+	        )T1
+	        <![CDATA[ WHERE ROWNUM <= #{pageSize} * (#{pageNo} -1) + #{pageSize} ]]>
+	    )TT1
+	    <![CDATA[ WHERE rnum >= #{pageSize} * (#{pageNo} -1) + 1 ]]>
+	)A
+	CROSS JOIN
+	(
+	    SELECT COUNT(*) totalCnt
+	    FROM subsidy
+	)B
+  
+  </select>
+  
+</mapper>  

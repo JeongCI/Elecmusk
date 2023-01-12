@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+.evcararea {
+  margin:0 auto;
+  border: 1px solid;
+  clear: both;
+  margin-top: 10px;
+}
+  #contents {
+    position: relative;
+    padding-top: 300px;
+    padding-bottom: 20px;
+    margin: 0 auto;
+    width: 1200px;
+    height: 100%;
+  }
+.subsidy-info{
+	text-align: right;
+	padding-right: 50px;
+	padding-bottom: 30px
+}
+.select-area{
+	padding-left: 50px;
+	z-index: 1;
+}
+.evcar-table{
+	border-collapse: collapse;
+	width: 100%;
+}
+.evcar-table td {
+	border-bottom: 1px solid;
+	border-top: 1px solid;
+	border-top-color:rgba(0,0,0,0.5);
+	border-bottom-color:rgba(0,0,0,0.5);
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+}
+.masterArea{
+	text-align: right;
+}
+
+.selectTable, th, td{
+	text-align:center;
+	padding-left: 5px;
+	padding-right: 5px;
+}
