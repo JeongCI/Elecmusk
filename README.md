@@ -53,6 +53,8 @@
   ### 4.2 EXERD
 ![EXERD](https://github.com/hykim-king/ELECMUSK/blob/main/doc/images/exerd.png)
 
+  ### 4.3 코드리뷰
+  ![코드리뷰](https://github.com/JeongCI/Elecmusk/blob/main/ELECMUSK_%EC%BD%94%EB%93%9C%EB%A6%AC%EB%B7%B0.pdf)
   
 # 5. 기능 시연:sunflower:  
   ### 5.1 메인화면
